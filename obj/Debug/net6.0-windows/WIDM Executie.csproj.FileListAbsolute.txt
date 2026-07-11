@@ -1,0 +1,23 @@
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\bin\Debug\net6.0-windows\WIDM Executie.exe
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\bin\Debug\net6.0-windows\WIDM Executie.deps.json
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\bin\Debug\net6.0-windows\WIDM Executie.runtimeconfig.json
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\bin\Debug\net6.0-windows\WIDM Executie.dll
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\bin\Debug\net6.0-windows\WIDM Executie.pdb
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM_Executie.Form1.resources
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM_Executie.Form2.resources
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM_Executie.Form3.resources
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM_Executie.Form4.resources
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM Executie.csproj.GenerateResource.cache
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM Executie.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM Executie.AssemblyInfoInputs.cache
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM Executie.AssemblyInfo.cs
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM Executie.csproj.CoreCompileInputs.cache
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM Executie.dll
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\refint\WIDM Executie.dll
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM Executie.pdb
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM Executie.genruntimeconfig.cache
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\ref\WIDM Executie.dll
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM_Executie.Form5.resources
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM_Executie.Form6.resources
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM_Executie.Properties.Resources.resources
+C:\Users\Golov\source\repos\WIDM Executie\WIDM Executie\obj\Debug\net6.0-windows\WIDM_Executie.Form7.resources

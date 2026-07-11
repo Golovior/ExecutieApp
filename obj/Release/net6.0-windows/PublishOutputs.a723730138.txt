@@ -1,0 +1,5 @@
+C:\Users\Golov\Documents\widm\Programma's\Executie\WIDM Executie.exe
+C:\Users\Golov\Documents\widm\Programma's\Executie\WIDM Executie.dll
+C:\Users\Golov\Documents\widm\Programma's\Executie\WIDM Executie.deps.json
+C:\Users\Golov\Documents\widm\Programma's\Executie\WIDM Executie.runtimeconfig.json
+C:\Users\Golov\Documents\widm\Programma's\Executie\WIDM Executie.pdb
