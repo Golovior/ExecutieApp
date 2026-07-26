@@ -55,23 +55,35 @@ namespace WIDM_Executie
                 textBox1.Visible = false;
                 button1.Visible = false;
 
-            
+                // post_results() wordt zoveel ms eerder verstuurd dan dat het scherm van kleur verandert:
+                int lamps_offset = -2000;
+                if (settings.Count >= 5 && (int.TryParse(settings[4].ToString(), out _) ) ){
+                    lamps_offset = settings[4] ;
+                }
+
                 // tijdelijke oplossing: gewoon hier in de code de url instellen ipv. uit de settings
                 string url = "http://localhost:8000";
-                this.post_results(url, spelerInfo[1]);
+                
+                this.change_roomlights(url, "blinking");
 
-                if (spelerInfo[2] == "y" && settings[0] == 1)
+                if (spelerInfo[2] == "y" && settings[0] == 1 ){ 
+                    Task.Delay(settings[3] * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
                     Task.Delay(settings[3] * 1000).ContinueWith(t => this.SetYellow());
-
-                if (spelerInfo[1] == "green")
+                }
+                if (spelerInfo[1] == "green" ){
+                    Task.Delay(settings[1] * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
                     Task.Delay(settings[1] * 1000).ContinueWith(t => this.SetGreen());
-
-                if (spelerInfo[1] == "red")
+                }
+                if (spelerInfo[1] == "red" ){
+                    Task.Delay(settings[1] * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
                     Task.Delay(settings[1] * 1000).ContinueWith(t => this.SetRed());
-
-                if (spelerInfo[1] == "yellow")
+                }
+                if (spelerInfo[1] == "yellow" ){
+                    Task.Delay(settings[1] * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
                     Task.Delay(settings[1] * 1000).ContinueWith(t => this.SetYellow());
-
+                }
+                
+                
                 Task.Delay(settings[1] * 1000 + settings[2] * 1000).ContinueWith(t => this.ResetView());
 
                 break;
@@ -159,7 +171,7 @@ namespace WIDM_Executie
         }
         
         
-        private async Task post_results(string url, string kleur)
+        private async Task change_roomlights(string url, string kleur)
         {
             
             using HttpClient client = new HttpClient();

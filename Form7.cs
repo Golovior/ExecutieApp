@@ -81,6 +81,7 @@ namespace WIDM_Executie
                     "secondsBeforeColor",
                     "secondsOfColor",
                     "secondsBeforeYellow",
+                    "lamps_result_delay",
                     
                     // todo: opnieuw aanzetten zodra settings ook strings kunnen bevatten
                     // "resultsUrl"
@@ -110,9 +111,13 @@ namespace WIDM_Executie
                             row += "secondsBeforeYellow,";
                             row += textBox3.Text;
                             break;
-                        case "resultsUrl":
-                            row += "resultsUrl,";
+                        case "lamp_results_url":
+                            row += "lamp_results_url,";
                             row += textBox4.Text;
+                            break;
+                        case "lamps_result_delay":
+                            row += "lamps_result_delay,";
+                            row += textBox5.Text;
                             break;
                     }
 
@@ -139,6 +144,11 @@ namespace WIDM_Executie
         }
 
         private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
         {
 
         }
