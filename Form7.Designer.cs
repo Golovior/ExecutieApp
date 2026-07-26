@@ -38,6 +38,8 @@
             button2 = new Button();
             textBox3 = new TextBox();
             label4 = new Label();
+            label5 = new Label();
+            textBox4 = new TextBox();
             SuspendLayout();
             // 
             // label1
@@ -52,7 +54,7 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(169, 12);
+            checkBox1.Location = new Point(158, 12);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(15, 14);
             checkBox1.TabIndex = 1;
@@ -69,16 +71,16 @@
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(169, 61);
+            textBox1.Location = new Point(157, 61);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(100, 23);
+            textBox1.Size = new Size(145, 23);
             textBox1.TabIndex = 3;
             // 
             // textBox2
             // 
-            textBox2.Location = new Point(169, 90);
+            textBox2.Location = new Point(157, 90);
             textBox2.Name = "textBox2";
-            textBox2.Size = new Size(100, 23);
+            textBox2.Size = new Size(145, 23);
             textBox2.TabIndex = 5;
             // 
             // label3
@@ -92,7 +94,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(12, 119);
+            button1.Location = new Point(12, 163);
             button1.Name = "button1";
             button1.Size = new Size(257, 23);
             button1.TabIndex = 6;
@@ -102,7 +104,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(12, 148);
+            button2.Location = new Point(12, 192);
             button2.Name = "button2";
             button2.Size = new Size(257, 23);
             button2.TabIndex = 7;
@@ -112,9 +114,9 @@
             // 
             // textBox3
             // 
-            textBox3.Location = new Point(169, 32);
+            textBox3.Location = new Point(157, 32);
             textBox3.Name = "textBox3";
-            textBox3.Size = new Size(100, 23);
+            textBox3.Size = new Size(145, 23);
             textBox3.TabIndex = 9;
             // 
             // label4
@@ -126,11 +128,30 @@
             label4.TabIndex = 8;
             label4.Text = "Seconds before yellow";
             // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(12, 117);
+            label5.Name = "label5";
+            label5.Size = new Size(61, 15);
+            label5.TabIndex = 10;
+            label5.Text = "Results url";
+            label5.Click += label5_Click;
+            // 
+            // textBox4
+            // 
+            textBox4.Location = new Point(157, 119);
+            textBox4.Name = "results_url";
+            textBox4.Size = new Size(145, 23);
+            textBox4.TabIndex = 11;
+            // 
             // Form7
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(279, 184);
+            ClientSize = new Size(314, 227);
+            Controls.Add(textBox4);
+            Controls.Add(label5);
             Controls.Add(textBox3);
             Controls.Add(label4);
             Controls.Add(button2);
@@ -159,5 +180,7 @@
         private Button button2;
         private TextBox textBox3;
         private Label label4;
+        private Label label5;
+        private TextBox textBox4;
     }
 }

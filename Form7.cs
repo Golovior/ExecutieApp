@@ -80,13 +80,16 @@ namespace WIDM_Executie
                     "showYellowScreens",
                     "secondsBeforeColor",
                     "secondsOfColor",
-                    "secondsBeforeYellow"
+                    "secondsBeforeYellow",
+                    
+                    // todo: opnieuw aanzetten zodra settings ook strings kunnen bevatten
+                    // "resultsUrl"
                 };
 
-                foreach (string s in strings) 
+                foreach (string s in strings)
                 {
                     string row = "";
-                    switch(s)
+                    switch (s)
                     {
                         case "showYellowScreens":
                             row += "showYellowScreens,";
@@ -106,6 +109,10 @@ namespace WIDM_Executie
                         case "secondsBeforeYellow":
                             row += "secondsBeforeYellow,";
                             row += textBox3.Text;
+                            break;
+                        case "resultsUrl":
+                            row += "resultsUrl,";
+                            row += textBox4.Text;
                             break;
                     }
 
@@ -129,6 +136,11 @@ namespace WIDM_Executie
         {
             this.Hide();
             this.f1.Show();
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

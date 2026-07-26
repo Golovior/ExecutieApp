@@ -126,7 +126,15 @@ namespace WIDM_Executie
                     continue;
                 }
 
-                results.Add(Convert.ToInt32(parts[1]));
+                if (int.TryParse(parts[1], out int intValue))
+                {
+                    results.Add(Convert.ToInt32(parts[1]));
+                } else {
+                    
+                    // todo: opnieuw aanzetten zodra settings ook strings kunnen bevatten
+                    // results.Add(parts[1]);
+                }
+
             }
 
             sr.Close();
