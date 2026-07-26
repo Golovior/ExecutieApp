@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Net.Http;
 
 namespace WIDM_Executie
 {
@@ -53,6 +54,11 @@ namespace WIDM_Executie
 
                 textBox1.Visible = false;
                 button1.Visible = false;
+
+            
+                // tijdelijke oplossing: gewoon hier in de code de url instellen ipv. uit de settings
+                string url = "http://localhost:8000";
+                this.post_results(url, spelerInfo[1]);
 
                 if (spelerInfo[2] == "y" && settings[0] == 1)
                     Task.Delay(settings[3] * 1000).ContinueWith(t => this.SetYellow());
@@ -150,6 +156,24 @@ namespace WIDM_Executie
 
                 this.Button1_Click(sender, e);
             }
+        }
+        
+        
+        private async Task post_results(string url, string kleur)
+        {
+            
+            using HttpClient client = new HttpClient();
+
+            using FormUrlEncodedContent content = new FormUrlEncodedContent(
+                new Dictionary<string, string>
+                {
+                    { "kleur", kleur }
+                }
+            );
+
+            HttpResponseMessage response = await client.PostAsync(url, content);
+
+            response.EnsureSuccessStatusCode();
         }
     }
 }
