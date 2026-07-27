@@ -42,7 +42,7 @@ namespace WIDM_Executie
 
             bool spelerGevonden = false;
 
-            List<int> settings = Form6.SettingsForExecution();
+            List<object> settings = Form6.SettingsForExecution();
 
             foreach (string speler in this.f4.spelersInExecutie)
             {
@@ -57,34 +57,38 @@ namespace WIDM_Executie
 
                 // post_results() wordt zoveel ms eerder verstuurd dan dat het scherm van kleur verandert:
                 int lamps_offset = -2000;
-                if (settings.Count >= 5 && (int.TryParse(settings[4].ToString(), out _) ) ){
-                    lamps_offset = settings[4] ;
+                if (settings.Count >= 5 && (int.TryParse(settings[4].ToString(), out int parsedOffset) ) ){
+                    lamps_offset = parsedOffset ;
                 }
 
-                // tijdelijke oplossing: gewoon hier in de code de url instellen ipv. uit de settings
+                // default url: localhost
                 string url = "http://localhost:8000";
+                if (settings.Count > 5 && this.IsValidUrl(settings[5]?.ToString()) )
+                {
+                    url = settings[5].ToString();
+                }
                 
                 this.change_roomlights(url, "blinking");
 
-                if (spelerInfo[2] == "y" && settings[0] == 1 ){ 
-                    Task.Delay(settings[3] * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
-                    Task.Delay(settings[3] * 1000).ContinueWith(t => this.SetYellow());
+                if (spelerInfo[2] == "y" && Convert.ToInt32(settings[0]) == 1 ){ 
+                    Task.Delay(Convert.ToInt32(settings[3]) * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
+                    Task.Delay(Convert.ToInt32(settings[3]) * 1000).ContinueWith(t => this.SetYellow());
                 }
                 if (spelerInfo[1] == "green" ){
-                    Task.Delay(settings[1] * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
-                    Task.Delay(settings[1] * 1000).ContinueWith(t => this.SetGreen());
+                    Task.Delay(Convert.ToInt32(settings[1]) * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
+                    Task.Delay(Convert.ToInt32(settings[1]) * 1000).ContinueWith(t => this.SetGreen());
                 }
                 if (spelerInfo[1] == "red" ){
-                    Task.Delay(settings[1] * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
-                    Task.Delay(settings[1] * 1000).ContinueWith(t => this.SetRed());
+                    Task.Delay(Convert.ToInt32(settings[1]) * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
+                    Task.Delay(Convert.ToInt32(settings[1]) * 1000).ContinueWith(t => this.SetRed());
                 }
                 if (spelerInfo[1] == "yellow" ){
-                    Task.Delay(settings[1] * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
-                    Task.Delay(settings[1] * 1000).ContinueWith(t => this.SetYellow());
+                    Task.Delay(Convert.ToInt32(settings[1]) * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
+                    Task.Delay(Convert.ToInt32(settings[1]) * 1000).ContinueWith(t => this.SetYellow());
                 }
                 
                 
-                Task.Delay(settings[1] * 1000 + settings[2] * 1000).ContinueWith(t => this.ResetView());
+                Task.Delay(Convert.ToInt32(settings[1]) * 1000 + Convert.ToInt32(settings[2]) * 1000).ContinueWith(t => this.ResetView());
 
                 break;
             }
@@ -119,14 +123,15 @@ namespace WIDM_Executie
             textBox1.Visible = true;
             button1.Visible = true;
         }
-
-        private static List<int> SettingsForExecution()
+        
+        
+        private static List<object> SettingsForExecution()
         {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/widmExecutie";
             string settingsFile = path + "/executieSettings.txt";
 
             StreamReader sr = File.OpenText(settingsFile);
-            List<int> results = new();
+            List<object> results = new();
 
             while (true)
             {
@@ -146,13 +151,10 @@ namespace WIDM_Executie
 
                 if (int.TryParse(parts[1], out int intValue))
                 {
-                    results.Add(Convert.ToInt32(parts[1]));
+                    results.Add(intValue);
                 } else {
-                    
-                    // todo: opnieuw aanzetten zodra settings ook strings kunnen bevatten
-                    // results.Add(parts[1]);
+                    results.Add(parts[1]);
                 }
-
             }
 
             sr.Close();
@@ -171,6 +173,15 @@ namespace WIDM_Executie
         }
         
         
+        private bool IsValidUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                return false;
+
+            return Uri.TryCreate(url, UriKind.Absolute, out Uri uriResult) 
+                   && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
+
         private async Task change_roomlights(string url, string kleur)
         {
             
@@ -187,5 +198,7 @@ namespace WIDM_Executie
 
             response.EnsureSuccessStatusCode();
         }
+        
+        
     }
 }

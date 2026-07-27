@@ -82,9 +82,7 @@ namespace WIDM_Executie
                     "secondsOfColor",
                     "secondsBeforeYellow",
                     "lamps_result_delay",
-                    
-                    // todo: opnieuw aanzetten zodra settings ook strings kunnen bevatten
-                    // "resultsUrl"
+                    "lamp_results_url",
                 };
 
                 foreach (string s in strings)
