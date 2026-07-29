@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,6 +17,12 @@ namespace WIDM_Executie
         public string filePath;
         public string fileName;
 
+        private readonly List<Label> playerLabels;
+        private readonly List<RadioButton> greenRadios;
+        private readonly List<RadioButton> yellowRadios;
+        private readonly List<RadioButton> redRadios;
+        private readonly List<CheckBox> alreadyYellowCheckboxes;
+
         public Form3(Form1 f1)
         {
             InitializeComponent();
@@ -33,6 +39,12 @@ namespace WIDM_Executie
                 var createdFile = File.Create(fileName);
                 createdFile.Close();
             }
+
+            playerLabels = new List<Label> { label2, label3, label4, label5, label6, label7, label8, label9, label10, label11, label12 };
+            greenRadios = new List<RadioButton> { rbp1_g, rbp2_g, rbp3_g, rbp4_g, rbp5_g, rbp6_g, rbp7_g, rbp8_g, rbp9_g, rbp10_g, rbp11_g };
+            yellowRadios = new List<RadioButton> { rbp1_y, rbp2_y, rbp3_y, rbp4_y, rbp5_y, rbp6_y, rbp7_y, rbp8_y, rbp9_y, rbp10_y, rbp11_y };
+            redRadios = new List<RadioButton> { rbp1_r, rbp2_r, rbp3_r, rbp4_r, rbp5_r, rbp6_r, rbp7_r, rbp8_r, rbp9_r, rbp10_r, rbp11_r };
+            alreadyYellowCheckboxes = new List<CheckBox> { cbp1_y, cbp2_y, cbp3_y, cbp4_y, cbp5_y, cbp6_y, cbp7_y, cbp8_y, cbp9_y, cbp10_y, cbp11_y };
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -44,9 +56,23 @@ namespace WIDM_Executie
             this.f1.Show();
         }
 
+        private void ResetPlayerControls()
+        {
+            for (int slot = 0; slot < playerLabels.Count; slot++)
+            {
+                playerLabels[slot].Text = "";
+                greenRadios[slot].Checked = false;
+                yellowRadios[slot].Checked = false;
+                redRadios[slot].Checked = false;
+                alreadyYellowCheckboxes[slot].Checked = false;
+            }
+        }
+
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            StreamReader sr = File.OpenText(fileName);
+            ResetPlayerControls();
+
+            using StreamReader sr = File.OpenText(fileName);
 
             while (true)
             {
@@ -57,162 +83,62 @@ namespace WIDM_Executie
                 }
 
                 string[] parts = s.Split(',');
-                
+
                 if (comboBox1.Text.Equals(parts[0]))
                 {
-                    for (Int32 i = 1; i < parts.Length; i++)
+                    for (Int32 i = 1; i < parts.Length && i <= playerLabels.Count; i++)
                     {
                         string[] playerInfo = parts[i].Split(';');
+                        int slot = i - 1;
 
-                        switch(i)
-                        {
-                            case 1:
-                                label2.Text = playerInfo[0];
-                                if (playerInfo[1] == "green" || playerInfo[1] == "yellow")
-                                    rbp1_g.Checked = true;
-                                else
-                                    rbp1_r.Checked = true;
-                                if (playerInfo[2] == "y")
-                                    cbp1_y.Checked = true;
-                                break;
-                            case 2:
-                                label3.Text = playerInfo[0];
-                                if (playerInfo[1] == "green" || playerInfo[1] == "yellow")
-                                    rbp2_g.Checked = true;
-                                else
-                                    rbp2_r.Checked = true;
-                                if (playerInfo[2] == "y")
-                                    cbp2_y.Checked = true;
-                                break;
-                            case 3:
-                                label4.Text = playerInfo[0];
-                                if (playerInfo[1] == "green" || playerInfo[1] == "yellow")
-                                    rbp3_g.Checked = true;
-                                else
-                                    rbp3_r.Checked = true;
-                                if (playerInfo[2] == "y")
-                                    cbp3_y.Checked = true;
-                                break;
-                            case 4:
-                                label5.Text = playerInfo[0];
-                                if (playerInfo[1] == "green" || playerInfo[1] == "yellow")
-                                    rbp4_g.Checked = true;
-                                else
-                                    rbp4_r.Checked = true;
-                                if (playerInfo[2] == "y")
-                                    cbp4_y.Checked = true;
-                                break;
-                            case 5:
-                                label6.Text = playerInfo[0];
-                                if (playerInfo[1] == "green" || playerInfo[1] == "yellow")
-                                    rbp5_g.Checked = true;
-                                else
-                                    rbp5_r.Checked = true;
-                                 if (playerInfo[2] == "y")
-                                    cbp5_y.Checked = true;
-                                break;
-                            case 6:
-                                label7.Text = playerInfo[0];
-                                if (playerInfo[1] == "green" || playerInfo[1] == "yellow")
-                                    rbp6_g.Checked = true;
-                                else
-                                    rbp6_r.Checked = true;
-                                if (playerInfo[2] == "y")
-                                    cbp6_y.Checked = true;
-                                break;
-                            case 7:
-                                label8.Text = playerInfo[0];
-                                if (playerInfo[1] == "green" || playerInfo[1] == "yellow")
-                                    rbp7_g.Checked = true;
-                                else
-                                    rbp7_r.Checked = true;
-                                if (playerInfo[2] == "y")
-                                    cbp7_y.Checked = true;
-                                break;
-                            case 8:
-                                label9.Text = playerInfo[0];
-                                if (playerInfo[1] == "green" || playerInfo[1] == "yellow")
-                                    rbp8_g.Checked = true;
-                                else
-                                    rbp8_r.Checked = true;
-                                if (playerInfo[2] == "y")
-                                    cbp8_y.Checked = true;
-                                break;
-                            case 9:
-                                label10.Text = playerInfo[0];
-                                if (playerInfo[1] == "green" || playerInfo[1] == "yellow")
-                                    rbp9_g.Checked = true;
-                                else
-                                    rbp9_r.Checked = true;
-                                if (playerInfo[2] == "y")
-                                    cbp9_y.Checked = true;
-                                break;
-                            case 10:
-                                label11.Text = playerInfo[0];
-                                if (playerInfo[1] == "green" || playerInfo[1] == "yellow")
-                                    rbp10_g.Checked = true;
-                                else
-                                    rbp10_r.Checked = true;
-                                if (playerInfo[2] == "y")
-                                    cbp10_y.Checked = true;
-                                break;
-                            case 11:
-                                label12.Text = playerInfo[0];
-                                if (playerInfo[1] == "green" || playerInfo[1] == "yellow")
-                                    rbp11_g.Checked = true;
-                                else
-                                    rbp11_r.Checked = true;
-                                if (playerInfo[2] == "y")
-                                    cbp11_y.Checked = true;
-                                break;
-                        }
+                        playerLabels[slot].Text = playerInfo[0];
+
+                        if (playerInfo[1] == "green")
+                            greenRadios[slot].Checked = true;
+                        else if (playerInfo[1] == "yellow")
+                            yellowRadios[slot].Checked = true;
+                        else
+                            redRadios[slot].Checked = true;
+
+                        if (playerInfo[2] == "y")
+                            alreadyYellowCheckboxes[slot].Checked = true;
                     }
                 }
             }
-            sr.Close();
         }
 
         public void UpdateListOfGames()
         {
+            comboBox1.Items.Clear();
+
             if (File.Exists(fileName))
             {
-                StreamReader sr = File.OpenText(fileName);
+                using StreamReader sr = File.OpenText(fileName);
 
-                while (true)
+                while(true)
                 {
                     string s = sr.ReadLine() ?? "";
-                    if (s == "")
-                    {
+                    if (s == "") {
                         break;
                     }
 
                     string[] parts = s.Split(',');
                     comboBox1.Items.Add(parts[0]);
                 }
-
-                sr.Close();
             }
         }
 
         private void SaveStatus()
         {
-            string tempFile = this.filePath + "executieSave.txt";
-            FileStream fsW;
+            string tempFile = this.filePath + "/executieSave.txt";
 
-            if (File.Exists(tempFile))
-            {
-                fsW = new FileStream(tempFile, FileMode.Append);
-            }
-            else
-            {
-                fsW = File.Create(tempFile);
-            }
+            using FileStream fsW = File.Create(tempFile);
 
             using (var fw = new StreamWriter(fsW))
             {
                 if (File.Exists(fileName))
                 {
-                    StreamReader sr = File.OpenText(fileName);
+                    using StreamReader sr = File.OpenText(fileName);
 
                     while (true)
                     {
@@ -223,101 +149,26 @@ namespace WIDM_Executie
                         }
 
                         string[] parts = s.Split(',');
-                        
+
                         if (comboBox1.Text.Equals(parts[0])) {
                             string executieLine = parts[0];
-                                
+
                             for(Int32 i = 1; i < parts.Length; i++)
                             {
                                 string[] playerInfo = parts[i].Split(';');
                                 string status = "";
                                 string alreadyYellow = "n";
-                                if (playerInfo[0] == label2.Text)
-                                {
-                                    if (rbp1_g.Checked) status = "green"; 
-                                    if (rbp1_r.Checked) status = "red";
-                                    if (rbp1_y.Checked) status = "yellow";
-                                    if (cbp1_y.Checked) alreadyYellow = "y";
-                                }
 
-                                if (playerInfo[0] == label3.Text)
+                                for (int slot = 0; slot < playerLabels.Count; slot++)
                                 {
-                                    if (rbp2_g.Checked) status = "green";
-                                    if (rbp2_r.Checked) status = "red";
-                                    if (rbp2_y.Checked) status = "yellow";
-                                    if (cbp2_y.Checked) alreadyYellow = "y";
-                                }
+                                    if (playerInfo[0] != playerLabels[slot].Text)
+                                        continue;
 
-                                if (playerInfo[0] == label4.Text)
-                                {
-                                    if (rbp3_g.Checked) status = "green"; 
-                                    if (rbp3_r.Checked) status = "red";
-                                    if (rbp3_y.Checked) status = "yellow";
-                                    if (cbp3_y.Checked) alreadyYellow = "y";
-                                }
-
-                                if (playerInfo[0] == label5.Text)
-                                {
-                                    if (rbp4_g.Checked) status = "green"; 
-                                    if (rbp4_r.Checked) status = "red";
-                                    if (rbp4_y.Checked) status = "yellow";
-                                    if (cbp4_y.Checked) alreadyYellow = "y";
-                                }
-
-                                if (playerInfo[0] == label6.Text)
-                                {
-                                    if (rbp5_g.Checked) status = "green"; 
-                                    if (rbp5_r.Checked) status = "red";
-                                    if (rbp5_y.Checked) status = "yellow";
-                                    if (cbp5_y.Checked) alreadyYellow = "y";
-                                }
-
-                                if (playerInfo[0] == label7.Text)
-                                {
-                                    if (rbp6_g.Checked) status = "green"; 
-                                    if (rbp6_r.Checked) status = "red";
-                                    if (rbp6_y.Checked) status = "yellow";
-                                    if (cbp6_y.Checked) alreadyYellow = "y";
-                                }
-
-                                if (playerInfo[0] == label8.Text)
-                                {
-                                    if (rbp7_g.Checked) status = "green"; 
-                                    if (rbp7_r.Checked) status = "red";
-                                    if (rbp7_y.Checked) status = "yellow";
-                                    if (cbp7_y.Checked) alreadyYellow = "y";
-                                }
-
-                                if (playerInfo[0] == label9.Text)
-                                {
-                                    if (rbp8_g.Checked) status = "green"; 
-                                    if (rbp8_r.Checked) status = "red";
-                                    if (rbp8_y.Checked) status = "yellow";
-                                    if (cbp8_y.Checked) alreadyYellow = "y";
-                                }
-                                 
-                                if (playerInfo[0] == label10.Text)
-                                {
-                                    if (rbp9_g.Checked) status = "green"; 
-                                    if (rbp9_r.Checked) status = "red";
-                                    if (rbp9_y.Checked) status = "yellow";
-                                    if (cbp9_y.Checked) alreadyYellow = "y";
-                                }
-
-                                if (playerInfo[0] == label11.Text)
-                                { 
-                                    if (rbp10_g.Checked) status = "green"; 
-                                    if (rbp10_r.Checked) status = "red";
-                                    if (rbp10_y.Checked) status = "yellow";
-                                    if (cbp10_y.Checked) alreadyYellow = "y";
-                                }
-
-                                if (playerInfo[0] == label12.Text)
-                                {
-                                    if (rbp11_g.Checked) status = "green"; 
-                                    if (rbp11_r.Checked) status = "red";
-                                    if (rbp11_y.Checked) status = "yellow";
-                                    if (cbp11_y.Checked) alreadyYellow = "y";
+                                    if (greenRadios[slot].Checked) status = "green";
+                                    if (redRadios[slot].Checked) status = "red";
+                                    if (yellowRadios[slot].Checked) status = "yellow";
+                                    if (alreadyYellowCheckboxes[slot].Checked) alreadyYellow = "y";
+                                    break;
                                 }
 
                                 executieLine += "," + playerInfo[0] + ";" + status + ";" + alreadyYellow;
@@ -326,16 +177,10 @@ namespace WIDM_Executie
                             fw.WriteLine(executieLine);
                         }
                     }
-
-                    sr.Close();
                 }
 
                 fw.Flush();
-
-                fw.Close();
             }
-
-            fsW.Close();
 
             File.Delete(fileName);
 

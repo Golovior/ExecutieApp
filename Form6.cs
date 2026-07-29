@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,7 +14,6 @@ namespace WIDM_Executie
 {
     public partial class Form6 : Form
     {
-        // test commit
         public Form4 f4;
 
         public Form6(Form4 f4)
@@ -42,7 +40,7 @@ namespace WIDM_Executie
 
             bool spelerGevonden = false;
 
-            List<object> settings = Form6.SettingsForExecution();
+            ExecutionSettings settings = Form6.SettingsForExecution();
 
             foreach (string speler in this.f4.spelersInExecutie)
             {
@@ -56,39 +54,33 @@ namespace WIDM_Executie
                 button1.Visible = false;
 
                 // post_results() wordt zoveel ms eerder verstuurd dan dat het scherm van kleur verandert:
-                int lamps_offset = -2000;
-                if (settings.Count >= 5 && (int.TryParse(settings[4].ToString(), out int parsedOffset) ) ){
-                    lamps_offset = parsedOffset ;
-                }
+                int lampsOffset = settings.LampsResultDelay;
+                string url = settings.LampResultsUrl;
 
-                // default url: localhost
-                string url = "http://localhost:8000";
-                if (settings.Count > 5 && this.IsValidUrl(settings[5]?.ToString()) )
+                _ = this.change_roomlights(url, "blinking");
+
+                if (spelerInfo[2] == "y" && settings.ShowYellowScreens)
                 {
-                    url = settings[5].ToString();
+                    this.ScheduleAfter(settings.SecondsBeforeYellow * 1000 + lampsOffset, () => _ = this.change_roomlights(url, spelerInfo[1]));
+                    this.ScheduleAfter(settings.SecondsBeforeYellow * 1000, this.SetYellow);
                 }
-                
-                this.change_roomlights(url, "blinking");
+                if (spelerInfo[1] == "green")
+                {
+                    this.ScheduleAfter(settings.SecondsBeforeColor * 1000 + lampsOffset, () => _ = this.change_roomlights(url, spelerInfo[1]));
+                    this.ScheduleAfter(settings.SecondsBeforeColor * 1000, this.SetGreen);
+                }
+                if (spelerInfo[1] == "red")
+                {
+                    this.ScheduleAfter(settings.SecondsBeforeColor * 1000 + lampsOffset, () => _ = this.change_roomlights(url, spelerInfo[1]));
+                    this.ScheduleAfter(settings.SecondsBeforeColor * 1000, this.SetRed);
+                }
+                if (spelerInfo[1] == "yellow")
+                {
+                    this.ScheduleAfter(settings.SecondsBeforeColor * 1000 + lampsOffset, () => _ = this.change_roomlights(url, spelerInfo[1]));
+                    this.ScheduleAfter(settings.SecondsBeforeColor * 1000, this.SetYellow);
+                }
 
-                if (spelerInfo[2] == "y" && Convert.ToInt32(settings[0]) == 1 ){ 
-                    Task.Delay(Convert.ToInt32(settings[3]) * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
-                    Task.Delay(Convert.ToInt32(settings[3]) * 1000).ContinueWith(t => this.SetYellow());
-                }
-                if (spelerInfo[1] == "green" ){
-                    Task.Delay(Convert.ToInt32(settings[1]) * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
-                    Task.Delay(Convert.ToInt32(settings[1]) * 1000).ContinueWith(t => this.SetGreen());
-                }
-                if (spelerInfo[1] == "red" ){
-                    Task.Delay(Convert.ToInt32(settings[1]) * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
-                    Task.Delay(Convert.ToInt32(settings[1]) * 1000).ContinueWith(t => this.SetRed());
-                }
-                if (spelerInfo[1] == "yellow" ){
-                    Task.Delay(Convert.ToInt32(settings[1]) * 1000 + lamps_offset).ContinueWith(t => this.change_roomlights(url, spelerInfo[1]));
-                    Task.Delay(Convert.ToInt32(settings[1]) * 1000).ContinueWith(t => this.SetYellow());
-                }
-                
-                
-                Task.Delay(Convert.ToInt32(settings[1]) * 1000 + Convert.ToInt32(settings[2]) * 1000).ContinueWith(t => this.ResetView());
+                this.ScheduleAfter(settings.SecondsBeforeColor * 1000 + settings.SecondsOfColor * 1000, this.ResetView);
 
                 break;
             }
@@ -123,43 +115,67 @@ namespace WIDM_Executie
             textBox1.Visible = true;
             button1.Visible = true;
         }
-        
-        
-        private static List<object> SettingsForExecution()
+
+        // Awaiting Task.Delay (instead of Task.Delay(...).ContinueWith(...)) keeps the
+        // continuation on the UI SynchronizationContext, so `action` is safe to touch controls.
+        // The try/catch keeps a stray failure (e.g. controls disposed because the app closed
+        // while a reveal was still pending) from taking down the whole app mid-show.
+        private async void ScheduleAfter(int delayMs, Action action)
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/widmExecutie";
-            string settingsFile = path + "/executieSettings.txt";
+            await Task.Delay(Math.Max(delayMs, 0));
 
-            StreamReader sr = File.OpenText(settingsFile);
-            List<object> results = new();
-
-            while (true)
+            try
             {
-                string s = sr.ReadLine() ?? "";
-                if (s == "")
-                {
-                    break;
-                }
+                action();
+            }
+            catch (Exception)
+            {
+                // A scheduled color-change/lamp call failing shouldn't be able to bring down
+                // the whole app mid-show; this matches the old fire-and-forget task's behavior.
+            }
+        }
 
-                string[] parts = s.Split(',');
+        private sealed class ExecutionSettings
+        {
+            public bool ShowYellowScreens;
+            public int SecondsBeforeColor;
+            public int SecondsOfColor;
+            public int SecondsBeforeYellow;
+            public int LampsResultDelay = -2000;
+            public string LampResultsUrl = "http://localhost:8000";
+        }
 
-                if (parts[1] == "")
-                {
-                    results.Add(0);
-                    continue;
-                }
+        private static ExecutionSettings SettingsForExecution()
+        {
+            Dictionary<string, string> values = ExecutionSettingsStore.Read(ExecutionSettingsStore.FilePath());
+            ExecutionSettings settings = new();
 
-                if (int.TryParse(parts[1], out int intValue))
-                {
-                    results.Add(intValue);
-                } else {
-                    results.Add(parts[1]);
-                }
+            if (values.TryGetValue(ExecutionSettingsStore.ShowYellowScreensKey, out string? showYellow))
+                settings.ShowYellowScreens = showYellow == "1";
+
+            if (values.TryGetValue(ExecutionSettingsStore.SecondsBeforeColorKey, out string? sbc))
+                int.TryParse(sbc, out settings.SecondsBeforeColor);
+
+            if (values.TryGetValue(ExecutionSettingsStore.SecondsOfColorKey, out string? soc))
+                int.TryParse(soc, out settings.SecondsOfColor);
+
+            if (values.TryGetValue(ExecutionSettingsStore.SecondsBeforeYellowKey, out string? sby))
+                int.TryParse(sby, out settings.SecondsBeforeYellow);
+
+            // A blank-but-present value matches this app's legacy "blank means 0" convention.
+            // Only a fully absent key (never saved, or an old/incomplete file) keeps the -2000 default.
+            if (values.TryGetValue(ExecutionSettingsStore.LampsResultDelayKey, out string? delayStr))
+            {
+                if (delayStr.Length == 0)
+                    settings.LampsResultDelay = 0;
+                else if (int.TryParse(delayStr, out int delay))
+                    settings.LampsResultDelay = delay;
             }
 
-            sr.Close();
+            if (values.TryGetValue(ExecutionSettingsStore.LampResultsUrlKey, out string? url) && ExecutionSettingsStore.IsValidUrl(url))
+                settings.LampResultsUrl = url;
 
-            return results;
+            return settings;
         }
 
         private void TextBox1_KeyUp(object sender, KeyEventArgs e)
@@ -171,20 +187,10 @@ namespace WIDM_Executie
                 this.Button1_Click(sender, e);
             }
         }
-        
-        
-        private bool IsValidUrl(string url)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-                return false;
-
-            return Uri.TryCreate(url, UriKind.Absolute, out Uri uriResult) 
-                   && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-        }
 
         private async Task change_roomlights(string url, string kleur)
         {
-            
+
             using HttpClient client = new HttpClient();
 
             using FormUrlEncodedContent content = new FormUrlEncodedContent(
@@ -198,7 +204,7 @@ namespace WIDM_Executie
 
             response.EnsureSuccessStatusCode();
         }
-        
-        
+
+
     }
 }

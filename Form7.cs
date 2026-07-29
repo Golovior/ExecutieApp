@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,7 +18,9 @@ namespace WIDM_Executie
         readonly Form1 f1;
         public string filePath;
         public string settingsFile;
-        public List<int> timerSettings = new();
+
+        private const int MaxSeconds = 3600;
+        private const int MaxLampOffsetMs = 60000;
 
         public Form7(Form1 f1)
         {
@@ -37,97 +39,76 @@ namespace WIDM_Executie
                 createdFile.Close();
             }
 
+            this.UpdateSettings();
         }
 
         public void UpdateSettings()
         {
-            if (File.Exists(settingsFile))
-            {
-                StreamReader sr = File.OpenText(settingsFile);
+            Dictionary<string, string> values = ExecutionSettingsStore.Read(settingsFile);
 
-                while (true)
-                {
-                    string s = sr.ReadLine() ?? "";
-                    if (s == "")
-                    {
-                        break;
-                    }
+            if (values.TryGetValue(ExecutionSettingsStore.ShowYellowScreensKey, out string? showYellow))
+                checkBox1.Checked = showYellow == "1";
+            if (values.TryGetValue(ExecutionSettingsStore.SecondsBeforeColorKey, out string? secondsBeforeColor))
+                textBox1.Text = secondsBeforeColor;
+            if (values.TryGetValue(ExecutionSettingsStore.SecondsOfColorKey, out string? secondsOfColor))
+                textBox2.Text = secondsOfColor;
+            if (values.TryGetValue(ExecutionSettingsStore.SecondsBeforeYellowKey, out string? secondsBeforeYellow))
+                textBox3.Text = secondsBeforeYellow;
+            if (values.TryGetValue(ExecutionSettingsStore.LampResultsUrlKey, out string? lampResultsUrl))
+                textBox4.Text = lampResultsUrl;
+            if (values.TryGetValue(ExecutionSettingsStore.LampsResultDelayKey, out string? lampsResultDelay))
+                textBox5.Text = lampsResultDelay;
+        }
 
-                    string[] parts = s.Split(',');
-                    timerSettings.Add(Convert.ToInt32(parts[1]));
-                }
-            }
+        private static bool TryParseInRange(string text, int min, int max, out int value)
+        {
+            return int.TryParse(text, out value) && value >= min && value <= max;
         }
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            string tempFile = this.filePath + "executieSettingsSave.txt";
-            FileStream fsW;
-
-            if (File.Exists(tempFile))
+            if (!TryParseInRange(textBox1.Text, 0, MaxSeconds, out _) ||
+                !TryParseInRange(textBox2.Text, 0, MaxSeconds, out _) ||
+                !TryParseInRange(textBox3.Text, 0, MaxSeconds, out _) ||
+                !TryParseInRange(textBox5.Text, -MaxLampOffsetMs, MaxLampOffsetMs, out _) ||
+                !ExecutionSettingsStore.IsValidUrl(textBox4.Text))
             {
-                fsW = new FileStream(tempFile, FileMode.Append);
-            }
-            else
-            {
-                fsW = File.Create(tempFile);
+                MessageBox.Show($"Vul geldige waarden in: seconden tussen 0 en {MaxSeconds}, lamps offset tussen -{MaxLampOffsetMs} en {MaxLampOffsetMs} ms, en een geldige URL (http(s)://...) bij Lamps results url.");
+                return;
             }
 
-            using (var fw = new StreamWriter(fsW))
-            {
-                List<string> strings = new()
-                {
-                    "showYellowScreens",
-                    "secondsBeforeColor",
-                    "secondsOfColor",
-                    "secondsBeforeYellow",
-                    "lamps_result_delay",
-                    "lamp_results_url",
-                };
+            string tempFile = this.filePath + "/executieSettingsSave.txt";
 
-                foreach (string s in strings)
+            using (FileStream fsW = File.Create(tempFile))
+            {
+                using (var fw = new StreamWriter(fsW))
                 {
-                    string row = "";
-                    switch (s)
+                    foreach (string key in ExecutionSettingsStore.Keys)
                     {
-                        case "showYellowScreens":
-                            row += "showYellowScreens,";
+                        string row = key + ",";
+
+                        if (key == ExecutionSettingsStore.ShowYellowScreensKey)
+                        {
                             if (checkBox1.Checked)
-                            {
                                 row += "1";
-                            }
-                            break;
-                        case "secondsBeforeColor":
-                            row += "secondsBeforeColor,";
+                        }
+                        else if (key == ExecutionSettingsStore.SecondsBeforeColorKey)
                             row += textBox1.Text;
-                            break;
-                        case "secondsOfColor":
-                            row += "secondsOfColor,";
+                        else if (key == ExecutionSettingsStore.SecondsOfColorKey)
                             row += textBox2.Text;
-                            break;
-                        case "secondsBeforeYellow":
-                            row += "secondsBeforeYellow,";
+                        else if (key == ExecutionSettingsStore.SecondsBeforeYellowKey)
                             row += textBox3.Text;
-                            break;
-                        case "lamp_results_url":
-                            row += "lamp_results_url,";
+                        else if (key == ExecutionSettingsStore.LampResultsUrlKey)
                             row += textBox4.Text;
-                            break;
-                        case "lamps_result_delay":
-                            row += "lamps_result_delay,";
+                        else if (key == ExecutionSettingsStore.LampsResultDelayKey)
                             row += textBox5.Text;
-                            break;
+
+                        fw.WriteLine(row);
                     }
 
-                    fw.WriteLine(row);
+                    fw.Flush();
                 }
-
-                fw.Flush();
-
-                fw.Close();
             }
-
-            fsW.Close();
 
             File.Delete(settingsFile);
 

@@ -30,30 +30,38 @@ namespace WIDM_Executie
 
         public void UpdateListOfGames()
         {
+            comboBox1.Items.Clear();
+
             if (File.Exists(filename))
             {
-                StreamReader sr = File.OpenText(filename);
-                    
-                while(true) 
+                using StreamReader sr = File.OpenText(filename);
+
+                while(true)
                 {
                     string s = sr.ReadLine() ?? "";
-                    if (s == "") { 
+                    if (s == "") {
                         break;
                     }
 
                     string[] parts = s.Split(',');
                     comboBox1.Items.Add(parts[0]);
                 }
-
-                sr.Close();
             }
         }
 
         private void Button1_Click(object sender, EventArgs e)
         {
+            this.spelersInExecutie.Clear();
+
             if(comboBox1.Text != "")
             {
-                StreamReader sr = File.OpenText(filename);
+                if (!File.Exists(filename))
+                {
+                    MessageBox.Show("Bestand met spellen niet gevonden.");
+                    return;
+                }
+
+                using StreamReader sr = File.OpenText(filename);
 
                 while (true)
                 {
@@ -64,7 +72,7 @@ namespace WIDM_Executie
                     }
 
                     string[] parts = s.Split(',');
-                
+
                     for(var i = 0; i < parts.Length; i++)
                     {
                         if(i == 0)
@@ -78,8 +86,6 @@ namespace WIDM_Executie
                         }
                     }
                 }
-
-                sr.Close();
             }
 
             this.Hide();

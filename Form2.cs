@@ -87,7 +87,7 @@ namespace WIDM_Executie
 
         public void CheckPlayers()
         {
-            if(textBox2.Text != "" && this.players.Count == Convert.ToInt32(textBox2.Text))
+            if(int.TryParse(textBox2.Text, out int expectedPlayerCount) && this.players.Count == expectedPlayerCount)
             {
                 this.button2.Enabled = true;
             }
