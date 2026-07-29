@@ -2,6 +2,9 @@
 bin/
 obj/
 
+# Inno Setup compiled installer
+Installer/Output/
+
 # Visual Studio
 .vs/
 
