@@ -80,13 +80,15 @@ namespace WIDM_Executie
                     "showYellowScreens",
                     "secondsBeforeColor",
                     "secondsOfColor",
-                    "secondsBeforeYellow"
+                    "secondsBeforeYellow",
+                    "lamps_result_delay",
+                    "lamp_results_url",
                 };
 
-                foreach (string s in strings) 
+                foreach (string s in strings)
                 {
                     string row = "";
-                    switch(s)
+                    switch (s)
                     {
                         case "showYellowScreens":
                             row += "showYellowScreens,";
@@ -106,6 +108,14 @@ namespace WIDM_Executie
                         case "secondsBeforeYellow":
                             row += "secondsBeforeYellow,";
                             row += textBox3.Text;
+                            break;
+                        case "lamp_results_url":
+                            row += "lamp_results_url,";
+                            row += textBox4.Text;
+                            break;
+                        case "lamps_result_delay":
+                            row += "lamps_result_delay,";
+                            row += textBox5.Text;
                             break;
                     }
 
@@ -129,6 +139,16 @@ namespace WIDM_Executie
         {
             this.Hide();
             this.f1.Show();
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
